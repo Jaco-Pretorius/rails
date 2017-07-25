@@ -40,7 +40,12 @@ module Minitest
 
     # Replace progress reporter for colors.
     reporter.reporters.delete_if { |reporter| reporter.kind_of?(SummaryReporter) || reporter.kind_of?(ProgressReporter) }
-    options[:io].define_singleton_method(:close) { raise }
+    original_close = options[:io].method(:close)
+    options[:io].define_singleton_method(:close) do |*args, &block|
+      puts caller
+      $stdout.flush
+      original_close.call(*args, &block)
+    end
     reporter << SuppressedSummaryReporter.new(options[:io], options)
     reporter << ::Rails::TestUnitReporter.new(options[:io], options)
   end
