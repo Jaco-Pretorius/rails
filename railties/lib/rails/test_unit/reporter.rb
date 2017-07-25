@@ -26,9 +26,6 @@ module Rails
       if fail_fast? && result.failure && !result.skipped?
         raise Interrupt
       end
-    rescue
-      p io
-      raise
     end
 
     def report
